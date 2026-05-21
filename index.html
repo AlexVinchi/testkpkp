@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кабінет директора — КПК ПВФП</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --paper:#f4efe6; --paper-deep:#ece5d6; --ink:#1a1612; --ink-soft:#4d4438;
+    --ink-mute:#8a7e6c; --line:#d4c8b0; --rose:#9d1f3a; --rose-deep:#7a1428;
+    --ease-out:cubic-bezier(0.23,1,0.32,1); --ease-drawer:cubic-bezier(0.32,0.72,0,1);
+    --d-fast:160ms; --d-base:220ms; --d-slow:480ms;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{font-size:16px;}
+  body{font-family:'Geist',system-ui,sans-serif;background:var(--paper);color:var(--ink);
+    min-height:100dvh;overflow-x:hidden;line-height:1.45;-webkit-font-smoothing:antialiased;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+    background-image:radial-gradient(circle at 13% 27%,rgba(26,22,18,0.025) 1px,transparent 1px),
+      radial-gradient(circle at 67% 73%,rgba(26,22,18,0.02) 1px,transparent 1px);
+    background-size:47px 47px,31px 31px;mix-blend-mode:multiply;opacity:0.6;}
+  .stage{min-height:100dvh;display:none;position:relative;}
+  .stage.is-active{display:block;}
+  .stage.is-active .reveal{animation:rise 600ms var(--ease-out) both;}
+  .stage.is-active .reveal:nth-child(2){animation-delay:60ms;}
+  .stage.is-active .reveal:nth-child(3){animation-delay:120ms;}
+  .stage.is-active .reveal:nth-child(4){animation-delay:180ms;}
+  .stage.is-active .reveal:nth-child(5){animation-delay:240ms;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px);filter:blur(4px);}to{opacity:1;transform:translateY(0);filter:blur(0);}}
+
+  .cta{position:relative;display:inline-flex;align-items:center;gap:14px;padding:16px 26px;
+    background:var(--ink);color:var(--paper);border:none;font-family:'Geist',sans-serif;
+    font-size:14px;font-weight:600;letter-spacing:0.02em;cursor:pointer;
+    transition:transform var(--d-fast) var(--ease-out),background-color var(--d-base) var(--ease-out);}
+  .cta:hover{background:var(--rose);}
+  .cta:active{transform:scale(0.97);}
+  .cta .arrow{transition:transform var(--d-base) var(--ease-out);}
+  .cta:hover .arrow{transform:translateX(4px);}
+  .cta.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);}
+  .cta.ghost:hover{background:var(--ink);color:var(--paper);}
+
+  /* START */
+  .start-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);min-height:100dvh;}
+  .start-main{padding:clamp(28px,6vw,72px);display:flex;flex-direction:column;
+    justify-content:space-between;border-right:1px solid var(--line);}
+  .top-tag{display:flex;align-items:center;gap:14px;font-family:'Geist Mono',monospace;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);}
+  .top-tag .dot{width:8px;height:8px;background:var(--rose);border-radius:50%;
+    animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .lockup{margin-top:clamp(40px,8vh,96px);margin-bottom:auto;}
+  .lockup-h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,9vw,128px);
+    line-height:0.94;letter-spacing:-0.025em;margin-bottom:26px;}
+  .lockup-h1 em{font-style:italic;color:var(--rose);display:block;}
+  .lockup-sub{font-size:clamp(15px,1.6vw,18px);line-height:1.5;color:var(--ink-soft);max-width:52ch;}
+  .lockup-sub strong{color:var(--ink);font-weight:600;}
+  .name-block{margin-top:clamp(32px,6vh,56px);padding-top:26px;border-top:1px solid var(--line);}
+  .name-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:10px;}
+  .name-input{width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--ink);
+    padding:10px 0 14px;font-family:'Instrument Serif',serif;font-size:clamp(24px,3vw,36px);
+    color:var(--ink);outline:none;transition:border-color var(--d-base) var(--ease-out);}
+  .name-input::placeholder{color:var(--ink-mute);font-style:italic;}
+  .name-input:focus{border-color:var(--rose);}
+  .start-foot{display:flex;align-items:center;justify-content:space-between;margin-top:30px;gap:24px;flex-wrap:wrap;}
+  .footnote{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.15em;
+    text-transform:uppercase;color:var(--ink-mute);}
+  .start-meta{padding:clamp(28px,6vw,72px) clamp(24px,5vw,56px);background:var(--paper-deep);
+    display:flex;flex-direction:column;justify-content:space-between;}
+  .meta-stamp{align-self:flex-end;margin-bottom:clamp(28px,6vh,64px);}
+  .seal{width:128px;height:128px;border:1.5px solid var(--rose);border-radius:50%;color:var(--rose);
+    display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-7deg);
+    position:relative;font-family:'Instrument Serif',serif;}
+  .seal::before{content:'';position:absolute;inset:7px;border:1px solid var(--rose);border-radius:50%;}
+  .seal-top,.seal-bot{font-family:'Geist Mono',monospace;font-size:8px;letter-spacing:0.15em;
+    text-transform:uppercase;font-weight:500;}
+  .seal-mid{font-size:18px;font-style:italic;line-height:1;margin:4px 0;}
+  .meta-row-item{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+    padding:18px 0;border-top:1px solid var(--line);}
+  .meta-row-item:last-child{border-bottom:1px solid var(--line);}
+  .meta-num{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(38px,5vw,58px);
+    line-height:1;}
+  .meta-num.rose{color:var(--rose);}
+  .meta-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-soft);text-align:right;max-width:12ch;}
+  .meta-foot{margin-top:22px;font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-mute);line-height:1.7;}
+
+  /* QUESTION */
+  .q-grid{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.4fr);min-height:100dvh;}
+  .q-left{padding:clamp(28px,5vw,56px);border-right:1px solid var(--line);display:flex;
+    flex-direction:column;justify-content:space-between;background:var(--paper-deep);}
+  .q-progress-head{display:flex;align-items:center;justify-content:space-between;
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px;}
+  .q-progress{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
+  .q-progress-step{height:3px;background:var(--line);transition:background var(--d-base) var(--ease-out);}
+  .q-progress-step.done{background:var(--rose);}
+  .q-progress-step.current{background:var(--ink);}
+  .q-time-marker{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(64px,10vw,116px);
+    line-height:0.95;margin:clamp(24px,8vh,64px) 0 14px;letter-spacing:-0.02em;}
+  .q-scenario-tag{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:22px;}
+  .q-text{font-family:'Instrument Serif',serif;font-size:clamp(21px,2.4vw,30px);line-height:1.25;max-width:32ch;}
+  .q-text em{font-style:italic;color:var(--rose);
+    background:linear-gradient(180deg,transparent 76%,rgba(157,31,58,0.18) 76%);padding:0 2px;}
+  .q-leftfoot{margin-top:28px;font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--ink-mute);}
+  .q-right{padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;justify-content:center;}
+  .q-opt-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:12px;}
+  .q-opts{border-top:1px solid var(--line);}
+  .q-opt{width:100%;text-align:left;background:transparent;border:none;border-bottom:1px solid var(--line);
+    padding:22px 12px 22px 0;display:flex;gap:22px;align-items:flex-start;cursor:pointer;position:relative;
+    transition:transform var(--d-fast) var(--ease-out),padding-left var(--d-base) var(--ease-out);
+    font-family:'Geist',sans-serif;color:var(--ink);}
+  .q-opt::before{content:'';position:absolute;left:-100%;top:0;bottom:0;width:100%;
+    background:var(--paper-deep);transition:left var(--d-base) var(--ease-out);z-index:-1;}
+  .q-opt:hover{padding-left:16px;}
+  .q-opt:hover::before{left:0;}
+  .q-opt:active{transform:scale(0.985);}
+  .q-opt-letter{font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;color:var(--rose);
+    line-height:1;min-width:30px;transition:transform var(--d-base) var(--ease-out);}
+  .q-opt:hover .q-opt-letter{transform:translateX(-4px);}
+  .q-opt-text{font-size:16px;line-height:1.5;flex:1;padding-right:12px;}
+  .q-opt-arrow{width:18px;height:18px;flex-shrink:0;margin-top:4px;opacity:0;transform:translateX(-8px);
+    color:var(--rose);transition:opacity var(--d-base) var(--ease-out),transform var(--d-base) var(--ease-out);}
+  .q-opt:hover .q-opt-arrow{opacity:1;transform:translateX(0);}
+
+  /* RESULT */
+  .r-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);min-height:100dvh;}
+  .r-left{padding:clamp(36px,7vw,96px) clamp(28px,6vw,80px);display:flex;flex-direction:column;
+    justify-content:space-between;border-right:1px solid var(--line);}
+  .r-eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+  .r-eyebrow .line{flex:0 0 32px;height:1px;background:var(--rose);}
+  .r-title{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(64px,11vw,152px);
+    line-height:0.9;letter-spacing:-0.03em;margin-bottom:22px;}
+  .r-title em{font-style:italic;color:var(--rose);}
+  .r-subtitle{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(20px,2vw,26px);
+    color:var(--ink-soft);margin-bottom:30px;max-width:30ch;}
+  .r-text{font-size:16px;line-height:1.65;max-width:50ch;margin-bottom:38px;}
+  .r-roles{padding-top:30px;border-top:1px solid var(--line);}
+  .r-roles-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px;}
+  .r-roles ul{list-style:none;}
+  .r-roles li{padding:13px 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;
+    gap:16px;font-size:15px;}
+  .r-roles li .idx{font-family:'Geist Mono',monospace;font-size:11px;color:var(--rose);min-width:24px;}
+  .r-actions{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap;}
+  .r-right{padding:clamp(36px,7vw,80px) clamp(28px,5vw,56px);background:var(--paper-deep);
+    display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+  .r-char{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(200px,36vw,440px);
+    line-height:0.8;color:var(--rose);opacity:0.12;position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);pointer-events:none;user-select:none;}
+  .r-char-content{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;}
+  .r-trait{padding:15px 0;border-top:1px solid var(--line);}
+  .r-trait:last-child{border-bottom:1px solid var(--line);}
+  .r-trait-name{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:6px;}
+  .r-trait-val{font-family:'Instrument Serif',serif;font-size:22px;line-height:1.2;}
+
+  /* FORK */
+  .fork-grid{display:grid;grid-template-columns:1fr 1fr;min-height:100dvh;}
+  .fork-card{padding:clamp(36px,7vw,80px) clamp(28px,5vw,56px);display:flex;flex-direction:column;
+    justify-content:space-between;cursor:pointer;position:relative;border:none;text-align:left;
+    background:var(--paper);color:var(--ink);font-family:'Geist',sans-serif;
+    transition:background var(--d-base) var(--ease-out);}
+  .fork-card:first-child{border-right:1px solid var(--line);}
+  .fork-card:hover{background:var(--paper-deep);}
+  .fork-num{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:auto;}
+  .fork-title{font-family:'Instrument Serif',serif;font-size:clamp(38px,6vw,68px);line-height:1;
+    margin:clamp(28px,6vh,64px) 0 14px;}
+  .fork-title em{font-style:italic;color:var(--rose);}
+  .fork-desc{font-size:15px;line-height:1.5;color:var(--ink-soft);max-width:28ch;margin-bottom:22px;}
+  .fork-go{display:inline-flex;align-items:center;gap:12px;font-family:'Geist Mono',monospace;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;transition:gap var(--d-base) var(--ease-out);}
+  .fork-card:hover .fork-go{gap:18px;}
+
+  /* PARENT */
+  .p-wrap{max-width:720px;margin:0 auto;padding:clamp(36px,7vh,72px) clamp(20px,5vw,48px);
+    min-height:100dvh;display:flex;flex-direction:column;justify-content:center;}
+  .p-eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+  .p-eyebrow .line{flex:0 0 32px;height:1px;background:var(--rose);}
+  .p-intro{font-family:'Instrument Serif',serif;font-size:clamp(26px,4vw,42px);line-height:1.15;margin-bottom:14px;}
+  .p-intro em{font-style:italic;color:var(--rose);}
+  .p-sub{font-size:16px;line-height:1.6;color:var(--ink-soft);margin-bottom:36px;max-width:54ch;}
+  .p-q{margin-bottom:32px;}
+  .p-q-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:6px;}
+  .p-q-text{font-family:'Instrument Serif',serif;font-size:clamp(19px,2.2vw,24px);line-height:1.3;margin-bottom:16px;}
+  .p-opts{display:flex;flex-direction:column;gap:8px;}
+  .p-opt{text-align:left;background:transparent;border:1px solid var(--line);padding:14px 18px;
+    font-family:'Geist',sans-serif;font-size:15px;color:var(--ink);cursor:pointer;
+    transition:border-color var(--d-fast) var(--ease-out),background var(--d-fast) var(--ease-out),transform var(--d-fast) var(--ease-out);}
+  .p-opt:hover{border-color:var(--ink);background:var(--paper-deep);}
+  .p-opt:active{transform:scale(0.99);}
+  .p-opt.selected{border-color:var(--rose);background:rgba(157,31,58,0.06);color:var(--rose-deep);font-weight:500;}
+  .p-contact{margin-top:8px;padding-top:30px;border-top:1px solid var(--line);}
+  .p-contact-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  .p-field label{display:block;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px;}
+  .p-field input{width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--line);
+    padding:8px 0 12px;font-family:'Geist',sans-serif;font-size:18px;color:var(--ink);outline:none;
+    transition:border-color var(--d-base) var(--ease-out);}
+  .p-field input:focus{border-color:var(--rose);}
+  .p-consent{display:flex;gap:12px;align-items:flex-start;margin:22px 0;padding:16px;
+    background:var(--paper-deep);cursor:pointer;}
+  .p-consent input{margin-top:3px;width:18px;height:18px;flex-shrink:0;accent-color:var(--rose);cursor:pointer;}
+  .p-consent-text{font-size:12px;line-height:1.5;color:var(--ink-soft);}
+  .p-consent-text strong{color:var(--ink);}
+
+  /* PARENT REPORT */
+  .pr-wrap{max-width:680px;margin:0 auto;padding:clamp(36px,7vh,72px) clamp(20px,5vw,48px);
+    min-height:100dvh;display:flex;flex-direction:column;justify-content:center;}
+  .pr-card{border:1px solid var(--ink);padding:clamp(26px,4vw,48px);position:relative;}
+  .pr-card::after{content:'';position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none;}
+  .pr-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:12px;}
+  .pr-name{font-family:'Instrument Serif',serif;font-size:clamp(30px,4vw,44px);line-height:1.1;margin-bottom:6px;}
+  .pr-type{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--rose);margin-bottom:20px;}
+  .pr-text{font-size:15px;line-height:1.65;margin-bottom:22px;}
+  .pr-points{list-style:none;margin-bottom:22px;}
+  .pr-points li{padding:12px 0;border-top:1px solid var(--line);display:flex;gap:14px;
+    align-items:baseline;font-size:14px;line-height:1.5;}
+  .pr-points li:last-child{border-bottom:1px solid var(--line);}
+  .pr-points li::before{content:'→';color:var(--rose);font-weight:700;}
+  .pr-next{background:var(--paper-deep);padding:20px;margin-bottom:22px;font-size:14px;line-height:1.6;}
+  .pr-next strong{color:var(--rose-deep);}
+  .pr-actions{display:flex;gap:12px;flex-wrap:wrap;}
+
+  /* CERTIFICATE */
+  .cert-overlay{position:fixed;inset:0;background:rgba(26,22,18,0.6);backdrop-filter:blur(6px);
+    z-index:200;opacity:0;pointer-events:none;transition:opacity var(--d-slow) var(--ease-out);
+    display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+  .cert-overlay.is-open{opacity:1;pointer-events:auto;}
+  .cert-shell{width:100%;max-width:860px;background:var(--paper);position:relative;
+    transform:translateY(24px) scale(0.96);opacity:0;
+    transition:transform var(--d-slow) var(--ease-drawer),opacity var(--d-slow) var(--ease-out);}
+  .cert-overlay.is-open .cert-shell{transform:translateY(0) scale(1);opacity:1;}
+  .cert-close{position:absolute;top:-44px;right:0;width:36px;height:36px;background:transparent;
+    border:1px solid var(--paper);color:var(--paper);cursor:pointer;font-family:'Geist Mono',monospace;
+    font-size:16px;transition:transform var(--d-fast) var(--ease-out),background var(--d-base) var(--ease-out);}
+  .cert-close:hover{background:var(--paper);color:var(--ink);}
+  .cert-close:active{transform:scale(0.92);}
+  .cert{padding:clamp(32px,5vw,60px);position:relative;
+    background:radial-gradient(ellipse at 30% 20%,rgba(157,31,58,0.04),transparent 60%),var(--paper);}
+  .cert::after{content:'';position:absolute;inset:16px;border:1px solid var(--ink);pointer-events:none;}
+  .cert-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;
+    padding-bottom:24px;border-bottom:1px solid var(--line);gap:24px;position:relative;z-index:1;}
+  .cert-issuer{font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px;max-width:32ch;line-height:1.5;}
+  .cert-h2{font-family:'Instrument Serif',serif;font-size:clamp(30px,4.5vw,50px);font-weight:400;
+    line-height:1;letter-spacing:-0.02em;}
+  .cert-h2 em{font-style:italic;color:var(--rose);}
+  .cert-event{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:14px;}
+  .cert-qr{width:72px;height:72px;flex-shrink:0;background:var(--paper);padding:3px;border:1px solid var(--ink);}
+  .cert-qr img,.cert-qr canvas{width:100%!important;height:100%!important;display:block;}
+  .cert-body{position:relative;z-index:1;text-align:center;padding:22px 0 32px;}
+  .cert-presented{font-family:'Instrument Serif',serif;font-style:italic;font-size:17px;
+    color:var(--ink-soft);margin-bottom:18px;}
+  .cert-name{font-family:'Instrument Serif',serif;font-size:clamp(38px,5.5vw,62px);line-height:1.05;
+    padding:18px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    margin:0 auto 26px;max-width:540px;letter-spacing:-0.01em;}
+  .cert-narrative{font-size:14px;line-height:1.65;max-width:56ch;margin:0 auto 22px;}
+  .cert-narrative strong{font-weight:600;}
+  .cert-type{display:inline-block;font-family:'Instrument Serif',serif;font-size:clamp(34px,4.5vw,50px);
+    color:var(--rose);font-style:italic;line-height:1;margin:10px 0;}
+  .cert-trait{font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;
+    color:var(--ink-soft);max-width:44ch;margin:0 auto;}
+  .cert-foot{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;gap:30px;
+    align-items:end;margin-top:34px;padding-top:24px;border-top:1px solid var(--line);}
+  .cert-sign{text-align:left;}
+  .cert-sign .signature{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;
+    color:var(--rose-deep);padding-bottom:4px;border-bottom:1px solid var(--ink);margin-bottom:6px;line-height:1.2;}
+  .cert-sign .role{font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.15em;
+    text-transform:uppercase;color:var(--ink-mute);line-height:1.5;}
+  .cert-foot-mid{display:flex;justify-content:center;}
+  .cert-seal-doc{width:120px;height:120px;border:1.5px solid var(--rose);border-radius:50%;color:var(--rose);
+    display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-8deg);
+    position:relative;font-family:'Instrument Serif',serif;flex-shrink:0;}
+  .cert-seal-doc::before{content:'';position:absolute;inset:7px;border:1px solid var(--rose);border-radius:50%;}
+  .cert-seal-doc .top,.cert-seal-doc .bot{font-family:'Geist Mono',monospace;font-size:7px;
+    letter-spacing:0.15em;text-transform:uppercase;font-weight:500;}
+  .cert-seal-doc .mid{font-size:16px;font-style:italic;margin:3px 0;line-height:1;}
+  .cert-date{text-align:right;}
+  .cert-date .d{font-family:'Geist Mono',monospace;font-size:15px;font-weight:500;margin-bottom:4px;}
+  .cert-date .l{font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--ink-mute);}
+  .cert-id{position:absolute;bottom:24px;left:clamp(32px,5vw,60px);font-family:'Geist Mono',monospace;
+    font-size:9px;letter-spacing:0.1em;color:var(--ink-mute);}
+  .cert-actions{display:flex;gap:10px;justify-content:flex-end;padding:18px clamp(32px,5vw,60px);
+    background:var(--paper-deep);border-top:1px solid var(--line);flex-wrap:wrap;}
+
+  /* SYNC BADGE */
+  .sync-badge{position:fixed;bottom:16px;left:16px;z-index:150;font-family:'Geist Mono',monospace;
+    font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 12px;
+    background:var(--ink);color:var(--paper);opacity:0;transform:translateY(8px);
+    transition:opacity var(--d-base) var(--ease-out),transform var(--d-base) var(--ease-out);pointer-events:none;}
+  .sync-badge.show{opacity:0.9;transform:translateY(0);}
+
+  @media print{
+    body{background:white;}body::before{display:none;}
+    body *{visibility:hidden;}
+    .cert,.cert *{visibility:visible;}
+    .cert{position:absolute;top:0;left:0;width:100%;}
+    .cert-actions,.cert-close{display:none!important;}
+  }
+
+  @media (max-width:900px){
+    .start-grid,.q-grid,.r-grid,.fork-grid{grid-template-columns:1fr;}
+    .start-main,.q-left,.r-left{border-right:none;border-bottom:1px solid var(--line);}
+    .fork-card:first-child{border-right:none;border-bottom:1px solid var(--line);}
+    .start-meta,.r-right{padding-block:36px;}
+    .r-char{font-size:240px;}
+    .cert-foot{grid-template-columns:1fr;gap:20px;justify-items:center;text-align:center;}
+    .cert-sign,.cert-date{text-align:center;}
+    .p-contact-fields{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+  }
+  @media (hover:none){
+    .q-opt:hover{padding-left:0;}.q-opt:hover::before{left:-100%;}
+    .q-opt:hover .q-opt-letter{transform:none;}
+    .q-opt:hover .q-opt-arrow{opacity:0;transform:translateX(-8px);}
+    .cta:hover{background:var(--ink);}.fork-card:hover{background:var(--paper);}
+  }
+</style>
+</head>
+<body>
+ікації в одному дипломі</div></div>
+        <div class="meta-foot">Документообіг · електронна звітність ·<br>банк-клієнт · Excel · кадровий облік ·<br>первинна документація</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- STAGE 2: QUESTION -->
+<section class="stage" id="stage-question">
+  <div class="q-grid">
+    <div class="q-left">
+      <div>
+        <div class="q-progress-head reveal"><span>Питання <span id="qNum">01</span> / 07</span><span id="qPct">14%</span></div>
+        <div class="q-progress reveal" id="qProgress"></div>
+      </div>
+      <div class="reveal">
+        <div class="q-time-marker" id="qTime">09:00</div>
+        <div class="q-scenario-tag" id="qScenario">—</div>
+        <div class="q-text" id="qText">—</div>
+      </div>
+      <div class="q-leftfoot reveal">Ранкова зміна · приймальня директора</div>
+    </div>
+    <div class="q-right">
+      <div class="q-opt-label reveal">Твоя дія</div>
+      <div class="q-opts reveal" id="qOpts"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STAGE 3: RESULT -->
+<section class="stage" id="stage-result">
+  <div class="r-grid">
+    <div class="r-left">
+      <div>
+        <div class="r-eyebrow reveal"><span class="line"></span><span>Результат визначено</span></div>
+        <h2 class="r-title reveal"><em id="vTitle">—</em></h2>
+        <div class="r-subtitle reveal" id="vSubtitle">—</div>
+        <p class="r-text reveal" id="vText">—</p>
+      </div>
+      <div class="reveal">
+        <div class="r-roles"><div class="r-roles-label">Підходящі ролі</div><ul id="vRoles"></ul></div>
+        <div class="r-actions">
+          <button class="cta" onclick="goFork()"><span>Далі</span>
+            <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
+          <button class="cta ghost" onclick="restart()">Пройти ще раз</button>
+        </div>
+      </div>
+    </div>
+    <aside class="r-right">
+      <div class="r-char" id="rChar">·</div>
+      <div class="r-char-content reveal">
+        <div class="r-trait"><div class="r-trait-name">Спосіб мислення</div><div class="r-trait-val" id="rTrait1">—</div></div>
+        <div class="r-trait"><div class="r-trait-name">Сильна сторона</div><div class="r-trait-val" id="rTrait2">—</div></div>
+        <div class="r-trait"><div class="r-trait-name">Робоче середовище</div><div class="r-trait-val" id="rTrait3">—</div></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- STAGE 4: FORK -->
+<section class="stage" id="stage-fork">
+  <div class="fork-grid">
+    <button class="fork-card reveal" onclick="forkSelf()">
+      <div class="fork-num">01 — Сам</div>
+      <div>
+        <div class="fork-title">Я <em>тут сам</em></div>
+        <div class="fork-desc">Отримай сертифікат на телефон та поділись результатом.</div>
+        <span class="fork-go">Отримати сертифікат →</span>
+      </div>
+    </button>
+    <button class="fork-card reveal" onclick="forkParent()">
+      <div class="fork-num">02 — З батьками</div>
+      <div>
+        <div class="fork-title">Зі мною <em>батьки</em></div>
+        <div class="fork-desc">Передай пристрій батькам — підготуємо інформацію для них.</div>
+        <span class="fork-go">Передати батькам →</span>
+      </div>
+    </button>
+  </div>
+</section>
+
+<!-- STAGE 5: PARENT QUESTIONS -->
+<section class="stage" id="stage-parent">
+  <div class="p-wrap">
+    <div class="p-eyebrow reveal"><span class="line"></span><span>Інформація для батьків</span></div>
+    <div class="p-intro reveal"><span id="pChildName">Ваша дитина</span> щойно пройшов(-ла) <em>випробування</em></div>
+    <div class="p-sub reveal">Психотип: <strong id="pChildType">—</strong>. Кілька коротких питань — і ми підготуємо персональну інформацію та запрошення на день відкритих дверей.</div>
+
+    <div class="reveal">
+      <div class="p-q">
+        <div class="p-q-label">Питання 1</div>
+        <div class="p-q-text">Що для вас найважливіше при виборі навчального закладу?</div>
+        <div class="p-opts" data-q="priority">
+          <button class="p-opt" onclick="selP(this,'priority','Працевлаштування')">Гарантоване працевлаштування після випуску</button>
+          <button class="p-opt" onclick="selP(this,'priority','Вступ до ВНЗ')">Можливість продовжити навчання в університеті</button>
+          <button class="p-opt" onclick="selP(this,'priority','Безпека і дисципліна')">Безпека та дисципліна закладу</button>
+          <button class="p-opt" onclick="selP(this,'priority','Вартість')">Вартість та доступність навчання</button>
+        </div>
+      </div>
+
+      <div class="p-q">
+        <div class="p-q-label">Питання 2</div>
+        <div class="p-q-text">Чи знаєте ви, що випускник отримує одразу три кваліфікації?</div>
+        <div class="p-opts" data-q="know">
+          <button class="p-opt" onclick="selP(this,'know','Так')">Так, саме тому цікавимось</button>
+          <button class="p-opt" onclick="selP(this,'know','Ні')">Ні, вперше чую — це цікаво</button>
+          <button class="p-opt" onclick="selP(this,'know','Дізнатись більше')">Хочу дізнатися більше</button>
+        </div>
+      </div>
+
+      <div class="p-q">
+        <div class="p-q-label">Питання 3</div>
+        <div class="p-q-text">Чи розглядаєте дуальну освіту — навчання + робота на підприємстві?</div>
+        <div class="p-opts" data-q="dual">
+          <button class="p-opt" onclick="selP(this,'dual','Так')">Так, це ідеальний варіант</button>
+          <button class="p-opt" onclick="selP(this,'dual','Цікаво')">Цікаво, розкажіть детальніше</button>
+          <button class="p-opt" onclick="selP(this,'dual','Не впевнені')">Поки не впевнені</button>
+        </div>
+      </div>
+
+      <div class="p-contact">
+        <div class="p-q-label">Контакт для запрошення — необов'язково</div>
+        <div class="p-contact-fields">
+          <div class="p-field"><label>Телефон</label><input type="tel" id="pPhone" placeholder="+380" autocomplete="off"></div>
+          <div class="p-field"><label>Або email</label><input type="email" id="pEmail" placeholder="@" autocomplete="off"></div>
+        </div>
+        <label class="p-consent">
+          <input type="checkbox" id="pConsent">
+          <span class="p-consent-text">Погоджуюсь з обробкою персональних даних (ім'я, контакт) для зворотного зв'язку щодо вступу до Київського професійного коледжу ПВФП. Дані зберігаються та не передаються третім особам, видаляються на запит. <strong>Якщо дитині менше 14 років — підтверджую згоду як її законний представник.</strong></span>
+        </label>
+        <button class="cta" onclick="submitParent()"><span>Підготувати інформацію</span>
+          <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAGE 6: PARENT REPORT -->
+<section class="stage" id="stage-parent-report">
+  <div class="pr-wrap">
+    <div class="pr-card reveal">
+      <div class="pr-label">Звіт для батьків</div>
+      <div class="pr-name" id="prName">—</div>
+      <div class="pr-type" id="prType">—</div>
+      <div class="pr-text" id="prText">—</div>
+      <ul class="pr-points">
+        <li>Три кваліфікації в одному дипломі: адміністратор, секретар керівника, обліковець</li>
+        <li>Робота одразу після випуску або вступ до ВНЗ за скороченою програмою</li>
+        <li>Старт кар'єри з зарплатою від 20 000 ₴</li>
+      </ul>
+      <div class="pr-next">Наступний крок: <strong>День відкритих дверей</strong>. Покажемо класи, познайомимо з викладачами, розкажемо про працевлаштування та договори з роботодавцями.</div>
+      <div class="pr-actions">
+        <button class="cta" onclick="openCert()"><span>Сертифікат дитини</span></button>
+        <button class="cta ghost" onclick="restart()">Завершити</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATE -->
+<div class="cert-overlay" id="certOverlay">
+  <div class="cert-shell">
+    <button class="cert-close" onclick="closeCert()" aria-label="Закрити">×</button>
+    <div class="cert" id="certPrint">
+      <div class="cert-head">
+        <div>
+          <div class="cert-issuer">Київський професійний коледж<br>з посиленою військовою та фізичною підготовкою</div>
+          <div class="cert-h2">Сертифікат <em>учасника</em></div>
+          <div class="cert-event">Фестиваль кар'єри · ВДНГ · 21–24 травня 2026</div>
+        </div>
+        <div class="cert-qr" id="certQr"></div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-presented">Цим документом засвідчується, що</div>
+        <div class="cert-name" id="certName">—</div>
+        <div class="cert-narrative">пройшов(-ла) випробування «Кабінет директора» та виявив(-ла) психотип, що відповідає інтегрованій професії <strong>«Адміністратор, секретар керівника, обліковець з реєстрації бухгалтерських даних»</strong>:</div>
+        <div class="cert-type" id="certType">—</div>
+        <div class="cert-trait" id="certTrait">—</div>
+      </div>
+      <div class="cert-foot">
+        <div class="cert-sign"><div class="signature">Є. Мельник</div><div class="role">Директор коледжу<br>підпис</div></div>
+        <div class="cert-foot-mid"><div class="cert-seal-doc"><div><div class="top">★ КПК ★</div><div class="mid">ПВФП</div><div class="bot">Київ · 2026</div></div></div></div>
+        <div class="cert-date"><div class="d" id="certDate">—</div><div class="l">Дата видачі</div></div>
+      </div>
+      <div class="cert-id" id="certId">№ KPK-2026-0001</div>
+    </div>
+    <div class="cert-actions">
+      <button class="cta" onclick="shareCert()" id="shareBtn"><span>Поділитись</span></button>
+      <button class="cta ghost" onclick="downloadCert()">Зберегти PDF</button>
+      <button class="cta ghost" onclick="window.print()">Друк</button>
+      <button class="cta ghost" onclick="closeCert()">Закрити</button>
+    </div>
+  </div>
+</div>
+
+<div class="sync-badge" id="syncBadge">синхронізовано</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ========= CONFIG — РЕДАГУЙ ТУТ =========
+// 1. Адреса, куди веде QR-код на сертифікаті (сайт коледжу або сам тест):
+const QR_TARGET = "https://pkvfp.kiev.ua/administrator-sekretar-kerivnyka-oblikovets%CA%B9-z-reyestratsiyi-bukhhalters%CA%B9kykh-danykh/";
+// 2. URL Google Apps Script (встав після деплою; залиш пустим — дані підуть у localStorage):
+const SCRIPT_URL = "";
+// 3. Прізвище директора на сертифікаті — заміни за потреби (також у HTML, .signature)
+// ========================================
+
+const questions = [
+  { time:"09:15", scenario:"Терміновий дзвінок",
+    text:"Директор на важливій зустрічі. Дзвонить ключовий партнер і кричить у слухавку: <em>«Терміново з'єднайте, у нас зрив контракту!»</em> Що робиш?",
+    opts:[{t:"З'єдную одразу — справа справді термінова",s:{K:2,S:1}},{t:"Записую повідомлення, передам директору після зустрічі",s:{H:2,D:1}},{t:"Запитую що саме сталось, оцінюю терміновість — потім вирішую",s:{S:3,D:1}},{t:"Кажу що директор зайнятий, прошу передзвонити за годину",s:{D:2,H:1}}]},
+  { time:"10:30", scenario:"Накладна без підпису",
+    text:"На столі — накладна на <em>47 200 ₴</em>. Не вистачає підпису комірника. Партнер вже їде забирати товар.",
+    opts:[{t:"Підписую сама(-м) — комірник поряд, не заперечить",s:{K:1}},{t:"Відкладаю, дзвоню комірнику, прошу терміново підійти",s:{H:3,S:1}},{t:"Передаю бухгалтеру як є — нехай вони вирішують",s:{D:1}},{t:"Зупиняю відвантаження до отримання підпису",s:{H:2,K:2}}]},
+  { time:"11:45", scenario:"Невдоволений клієнт",
+    text:"Прийшов клієнт <em>без запису</em>. Директор зайнятий ще на годину. Голос підвищується, привертає увагу.",
+    opts:[{t:"Спокійно вислуховую, пропоную каву та конкретний час очікування",s:{D:3,S:1}},{t:"Викликаю охорону — це непрофесійна поведінка",s:{K:2}},{t:"Намагаюсь вирішити його питання сама(-м), не турбуючи директора",s:{S:2,D:2}},{t:"Чітко повідомляю: запис обов'язковий, пропоную записати на завтра",s:{H:2,D:1}}]},
+  { time:"13:20", scenario:"Розбіжність у звіті",
+    text:"У квартальному звіті не сходиться <em>340 ₴</em>. Подати треба завтра о 09:00.",
+    opts:[{t:"Округлюю — 340 ₴ на тлі звіту це похибка",s:{K:1}},{t:"Перевіряю первинні документи по кожному рядку до знаходження",s:{H:3,S:1}},{t:"Дзвоню бухгалтеру, прошу подивитись разом",s:{D:2,S:1}},{t:"Записую розбіжність у пояснювальну, подаю звіт",s:{H:1,K:1}}]},
+  { time:"14:50", scenario:"Колізія у розкладі",
+    text:"Директор одночасно записаний на <em>дві зустрічі о 16:00</em>: податкова інспекторка та постачальник.",
+    opts:[{t:"Дзвоню постачальнику, переношу — податкову не можна",s:{S:3,K:1}},{t:"Питаю директора — він вирішить сам",s:{D:1,H:1}},{t:"Переношу обидві: податкова на 16:00, постачальник на 17:00",s:{S:2,H:2}},{t:"Чесно перепрошую обом, пропоную перенести на завтра",s:{D:3,H:1}}]},
+  { time:"15:30", scenario:"Несподіванка",
+    text:"Дзвонить заступник: <em>директор у лікарні</em>. Через годину онлайн-нарада з міжнародним партнером.",
+    opts:[{t:"Скасовую нараду — здоров'я важливіше за все",s:{D:2}},{t:"Дзвоню партнеру, пояснюю ситуацію загально, переношу на завтра",s:{S:2,D:2}},{t:"Беру нараду на себе — представляю компанію, фіксую все письмово",s:{K:3,S:1}},{t:"Шукаю заступника, який проведе нараду замість директора",s:{S:3,K:1}}]},
+  { time:"17:00", scenario:"Кінець зміни",
+    text:"Ти збиралась(-вся) йти, але прийшла <em>перевірка з пожежної</em>. Директор уже поїхав. Інспектор просить документи.",
+    opts:[{t:"Кажу що нічого не знаю, нехай чекають директора завтра",s:{}},{t:"Викликаю директора назад — це його зона відповідальності",s:{H:1,D:1}},{t:"Надаю документи що знаю, інші — лише з директором, фіксую візит",s:{H:2,K:3,S:1}},{t:"Пропоную інспектору каву, ввічливо тягну час до повернення директора",s:{D:3,S:1}}]}
+];
+
+const psychotypes = {
+  S:{title:"Стратег",char:"S",subtitle:"Той, хто бачить наперед",
+    desc:"Ти оцінюєш ситуацію цілісно, бачиш пріоритети, розставляєш послідовність дій. Не панікуєш, не реагуєш імпульсивно — спочатку аналізуєш, потім дієш. Це найвищий рівень адміністративної роботи.",
+    descShort:"Бачить ситуацію цілісно. Розставляє пріоритети. Аналізує перед дією.",
+    traits:{mindset:"Системне планування",strength:"Розставлення пріоритетів",env:"Кабінет керівника великої компанії"},
+    roles:["Адміністратор офісу великої компанії","Помічник керівника (executive assistant)","Координатор проєктів","Офіс-менеджер з функцією управління"]},
+  H:{title:"Хранитель",char:"H",subtitle:"Точність — твій інструмент",
+    desc:"Ти бачиш помилку в одному рядку з тисячі. Документи, цифри, реєстри — це твоє. Без таких людей будь-яка компанія розвалюється за тиждень: податкова, бухгалтерія, кадри тримаються саме на тобі.",
+    descShort:"Бачить помилку з першого погляду. Документи та цифри — рідна стихія.",
+    traits:{mindset:"Аналітичне, методичне",strength:"Робота з документами",env:"Архів, реєстр, бухгалтерія"},
+    roles:["Обліковець з реєстрації бухгалтерських даних","Секретар-діловод","Фахівець з первинної документації","Архіваріус, кадровик-помічник"]},
+  D:{title:"Дипломат",char:"D",subtitle:"Ти вмієш з людьми",
+    desc:"Гасиш конфлікти до того, як вони розгорілись. Знаходиш слова для злого клієнта, нервового партнера, втомленого директора. Ти — обличчя компанії, перше враження. Без емпатії жоден офіс не функціонує.",
+    descShort:"Гасить конфлікти словами. Перше обличчя компанії.",
+    traits:{mindset:"Емпатичне, орієнтоване на людей",strength:"Комунікація та де-ескалація",env:"Приймальня, рецепція, представництво"},
+    roles:["Секретар керівника великої організації","Адміністратор приймальні","Координатор клієнтського сервісу","Асистент у представницьких структурах"]},
+  K:{title:"Кризовий",char:"K",subtitle:"Працює там, де гаряче",
+    desc:"Ти не губишся під тиском. Швидке рішення, чіткий протокол, відповідальність за результат. Це профіль адміністратора у військовій, правоохоронній або екстреній структурі — там, де ціна помилки висока.",
+    descShort:"Не губиться під тиском. Швидко вирішує. Тримає протокол.",
+    traits:{mindset:"Тактичне, рішуче",strength:"Дії під тиском",env:"Штаб, операційний центр, силова структура"},
+    roles:["Адміністратор у штабі військової частини","Діловод у силових структурах (ВСУ, ДСНС)","Помічник керівника в антикризовому управлінні","Координатор операційних центрів"]}
+};
+
+// ========= STATE & LOGIC =========
+let currentQ = 0;
+let scores = {S:0,H:0,D:0,K:0};
+let userName = "";
+let resultType = "S";
+let certIdValue = "";
+let parentAnswers = {priority:"",know:"",dual:""};
+const $ = id => document.getElementById(id);
+
+function switchStage(id){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('is-active'));
+  requestAnimationFrame(()=>{ $(id).classList.add('is-active'); window.scrollTo({top:0,behavior:'instant'}); });
+}
+
+function startTest(){
+  const n = $('userName').value.trim();
+  if(!n || n.length<2){ $('userName').focus(); $('userName').style.borderBottomColor='var(--rose)';
+    setTimeout(()=>{$('userName').style.borderBottomColor='';},1200); return; }
+  userName = n; currentQ = 0; scores = {S:0,H:0,D:0,K:0};
+  buildProgress(); switchStage('stage-question'); loadQuestion();
+}
+
+function buildProgress(){
+  const c = $('qProgress'); c.innerHTML='';
+  for(let i=0;i<questions.length;i++){ const d=document.createElement('div'); d.className='q-progress-step'; c.appendChild(d); }
+}
+function updateProgress(){
+  const steps = $('qProgress').children;
+  for(let i=0;i<steps.length;i++){ steps[i].classList.remove('done','current');
+    if(i<currentQ) steps[i].classList.add('done'); else if(i===currentQ) steps[i].classList.add('current'); }
+  $('qPct').textContent = Math.round((currentQ/questions.length)*100)+'%';
+  $('qNum').textContent = String(currentQ+1).padStart(2,'0');
+}
+function loadQuestion(){
+  const q = questions[currentQ]; updateProgress();
+  $('qTime').textContent = q.time; $('qScenario').textContent = q.scenario; $('qText').innerHTML = q.text;
+  const optsEl = $('qOpts'); optsEl.innerHTML='';
+  const letters = ['А','Б','В','Г'];
+  q.opts.forEach((opt,i)=>{
+    const btn = document.createElement('button'); btn.className='q-opt';
+    btn.innerHTML = `<span class="q-opt-letter">${letters[i]}</span><span class="q-opt-text">${opt.t}</span><svg class="q-opt-arrow" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H17M17 7L11 1M17 7L11 13"/></svg>`;
+    btn.style.opacity='0'; btn.style.transform='translateY(8px)';
+    btn.style.transition='opacity 320ms var(--ease-out),transform 320ms var(--ease-out),padding-left var(--d-base) var(--ease-out)';
+    btn.style.transitionDelay=(50+i*60)+'ms';
+    btn.onclick=()=>selectAnswer(opt.s);
+    optsEl.appendChild(btn);
+  });
+  requestAnimationFrame(()=>{ [...optsEl.children].forEach(b=>{ b.style.opacity='1'; b.style.transform='translateY(0)'; }); });
+}
+function selectAnswer(d){
+  Object.keys(d).forEach(k=>{ scores[k]=(scores[k]||0)+(d[k]||0); });
+  currentQ++;
+  if(currentQ>=questions.length) setTimeout(showResult,220); else setTimeout(loadQuestion,180);
+}
+
+function showResult(){
+  let maxKey='S', maxVal=-1;
+  Object.keys(scores).forEach(k=>{ if(scores[k]>maxVal){maxVal=scores[k];maxKey=k;} });
+  resultType = maxKey;
+  const p = psychotypes[maxKey];
+  $('vTitle').textContent=p.title; $('vSubtitle').textContent=p.subtitle; $('vText').textContent=p.desc;
+  $('rChar').textContent=p.char; $('rTrait1').textContent=p.traits.mindset;
+  $('rTrait2').textContent=p.traits.strength; $('rTrait3').textContent=p.traits.env;
+  const rolesEl=$('vRoles'); rolesEl.innerHTML='';
+  p.roles.forEach((r,i)=>{ const li=document.createElement('li');
+    li.innerHTML=`<span class="idx">${String(i+1).padStart(2,'0')}</span><span>${r}</span>`; rolesEl.appendChild(li); });
+  prepareCert(p);
+  switchStage('stage-result');
+}
+
+function prepareCert(p){
+  $('certName').textContent=userName; $('certType').textContent=p.title;
+  $('certTrait').textContent='«'+p.descShort+'»';
+  const now=new Date();
+  const dd=String(now.getDate()).padStart(2,'0'), mm=String(now.getMonth()+1).padStart(2,'0');
+  $('certDate').textContent=`${dd}.${mm}.${now.getFullYear()}`;
+  certIdValue='KPK-2026-'+String(Math.floor(Math.random()*9000)+1000);
+  $('certId').textContent='№ '+certIdValue;
+  // QR
+  const qrBox=$('certQr'); qrBox.innerHTML='';
+  try{ new QRCode(qrBox,{text:QR_TARGET,width:66,height:66,colorDark:"#1a1612",colorLight:"#f4efe6",correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
+}
+
+// FORK
+function goFork(){ switchStage('stage-fork'); }
+function forkSelf(){ saveData('school'); openCert(); }
+function forkParent(){
+  $('pChildName').textContent=userName;
+  $('pChildType').textContent=psychotypes[resultType].title;
+  switchStage('stage-parent');
+}
+
+// PARENT
+function selP(btn,key,val){
+  parentAnswers[key]=val;
+  btn.parentElement.querySelectorAll('.p-opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function submitParent(){
+  const phone=$('pPhone').value.trim(), email=$('pEmail').value.trim(), consent=$('pConsent').checked;
+  if((phone||email) && !consent){
+    $('pConsent').parentElement.style.outline='2px solid var(--rose)';
+    setTimeout(()=>{$('pConsent').parentElement.style.outline='';},1500); return;
+  }
+  saveData('parent');
+  const p=psychotypes[resultType];
+  $('prName').textContent=userName;
+  $('prType').textContent='Психотип: '+p.title;
+  $('prText').textContent=p.desc;
+  switchStage('stage-parent-report');
+}
+
+// CERT actions
+function openCert(){ $('certOverlay').classList.add('is-open'); document.body.style.overflow='hidden'; }
+function closeCert(){ $('certOverlay').classList.remove('is-open'); document.body.style.overflow=''; }
+$('certOverlay').addEventListener('click',e=>{ if(e.target===$('certOverlay')) closeCert(); });
+
+async function renderCanvas(){
+  return await html2canvas($('certPrint'),{scale:2,backgroundColor:'#f4efe6',useCORS:true});
+}
+async function downloadCert(){
+  try{
+    const canvas=await renderCanvas();
+    const link=document.createElement('a');
+    link.download=`sertifikat-${userName.replace(/\s+/g,'-')}.png`;
+    link.href=canvas.toDataURL('image/png'); link.click();
+  }catch(e){ alert('Не вдалось зберегти. Спробуй «Друк».'); }
+}
+async function shareCert(){
+  try{
+    const canvas=await renderCanvas();
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],`sertifikat-${userName}.png`,{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Мій сертифікат — КПК ПВФП',
+          text:`Я пройшов(-ла) тест профорієнтації. Мій психотип: ${psychotypes[resultType].title}!`});
+      }else{
+        // fallback: download
+        const link=document.createElement('a'); link.download=`sertifikat.png`;
+        link.href=canvas.toDataURL('image/png'); link.click();
+      }
+    },'image/png');
+  }catch(e){ alert('Поділитись не вдалось — спробуй «Зберегти PDF».'); }
+}
+
+// ========= DATA → GOOGLE SHEETS (+ localStorage fallback) =========
+function saveData(type){
+  const now=new Date();
+  const ts=`${String(now.getDate()).padStart(2,'0')}.${String(now.getMonth()+1).padStart(2,'0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  let payload;
+  if(type==='parent'){
+    payload={type:'parent',ts,childName:userName,childType:psychotypes[resultType].title,
+      contact:($('pPhone').value.trim()+' '+$('pEmail').value.trim()).trim(),
+      priority:parentAnswers.priority,know:parentAnswers.know,dual:parentAnswers.dual,certId:certIdValue};
+  }else{
+    payload={type:'school',ts,name:userName,phone:'',psychotype:psychotypes[resultType].title,certId:certIdValue};
+  }
+  // queue locally always
+  const queue=JSON.parse(localStorage.getItem('kpk_queue')||'[]');
+  queue.push(payload); localStorage.setItem('kpk_queue',JSON.stringify(queue));
+  flushQueue();
+}
+function flushQueue(){
+  if(!SCRIPT_URL){ showSync('збережено локально'); return; }
+  const queue=JSON.parse(localStorage.getItem('kpk_queue')||'[]');
+  if(queue.length===0) return;
+  const remaining=[];
+  let done=0;
+  queue.forEach(item=>{
+    fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(item)})
+      .then(()=>{ done++; if(done+remaining.length>=queue.length){ localStorage.setItem('kpk_queue',JSON.stringify(remaining)); showSync('синхронізовано'); } })
+      .catch(()=>{ remaining.push(item); localStorage.setItem('kpk_queue',JSON.stringify(remaining)); showSync('очікує мережі'); });
+  });
+}
+function showSync(msg){
+  const b=$('syncBadge'); b.textContent=msg; b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),2600);
+}
+window.addEventListener('online',flushQueue);
+window.addEventListener('load',()=>{ if(SCRIPT_URL) flushQueue(); });
+
+function restart(){
+  $('userName').value=''; $('pPhone').value=''; $('pEmail').value=''; $('pConsent').checked=false;
+  parentAnswers={priority:"",know:"",dual:""};
+  document.querySelectorAll('.p-opt.selected').forEach(b=>b.classList.remove('selected'));
+  closeCert(); switchStage('stage-start');
+}
+$('userName').addEventListener('keydown',e=>{ if(e.key==='Enter') startTest(); });
+</script>
+</body>
+</html>
