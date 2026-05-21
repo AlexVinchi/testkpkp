@@ -56,6 +56,11 @@
   .lockup-h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,9vw,128px);
     line-height:0.94;letter-spacing:-0.025em;margin-bottom:26px;}
   .lockup-h1 em{font-style:italic;color:var(--rose);display:block;}
+  .start-tagline{font-family:'Geist Mono',monospace;font-size:clamp(12px,1.4vw,14px);
+    letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px;}
+  .start-challenge{font-family:'Instrument Serif',serif;font-size:clamp(26px,3.6vw,46px);
+    line-height:1.2;color:var(--ink);max-width:18ch;}
+  .start-challenge em{font-style:italic;color:var(--rose);}
   .lockup-sub{font-size:clamp(15px,1.6vw,18px);line-height:1.5;color:var(--ink-soft);max-width:52ch;}
   .lockup-sub strong{color:var(--ink);font-weight:600;}
   .name-block{margin-top:clamp(32px,6vh,56px);padding-top:26px;border-top:1px solid var(--line);}
@@ -70,8 +75,8 @@
   .footnote{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.15em;
     text-transform:uppercase;color:var(--ink-mute);}
   .start-meta{padding:clamp(28px,6vw,72px) clamp(24px,5vw,56px);background:var(--paper-deep);
-    display:flex;flex-direction:column;justify-content:space-between;}
-  .meta-stamp{align-self:flex-end;margin-bottom:clamp(28px,6vh,64px);}
+    display:flex;flex-direction:column;justify-content:center;align-items:center;}
+  .meta-stamp{margin:0;}
   .seal{width:128px;height:128px;border:1.5px solid var(--rose);border-radius:50%;color:var(--rose);
     display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-7deg);
     position:relative;font-family:'Instrument Serif',serif;}
@@ -93,22 +98,23 @@
   /* QUESTION */
   .q-grid{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.4fr);min-height:100dvh;}
   .q-left{padding:clamp(28px,5vw,56px);border-right:1px solid var(--line);display:flex;
-    flex-direction:column;justify-content:space-between;background:var(--paper-deep);}
+    flex-direction:column;justify-content:flex-start;background:var(--paper-deep);overflow-y:auto;}
   .q-progress-head{display:flex;align-items:center;justify-content:space-between;
     font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.2em;
-    text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px;}
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px;flex-shrink:0;}
   .q-progress{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
   .q-progress-step{height:3px;background:var(--line);transition:background var(--d-base) var(--ease-out);}
   .q-progress-step.done{background:var(--rose);}
   .q-progress-step.current{background:var(--ink);}
-  .q-time-marker{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(64px,10vw,116px);
-    line-height:0.95;margin:clamp(24px,8vh,64px) 0 14px;letter-spacing:-0.02em;}
+  .q-body{padding:clamp(32px,7vh,72px) 0 24px;}
+  .q-time-marker{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(44px,6vw,80px);
+    line-height:1.1;margin:0 0 14px;letter-spacing:-0.02em;}
   .q-scenario-tag{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.22em;
-    text-transform:uppercase;color:var(--rose);margin-bottom:22px;}
-  .q-text{font-family:'Instrument Serif',serif;font-size:clamp(21px,2.4vw,30px);line-height:1.25;max-width:32ch;}
+    text-transform:uppercase;color:var(--rose);margin-bottom:18px;}
+  .q-text{font-family:'Instrument Serif',serif;font-size:clamp(20px,2.2vw,28px);line-height:1.3;max-width:32ch;}
   .q-text em{font-style:italic;color:var(--rose);
     background:linear-gradient(180deg,transparent 76%,rgba(157,31,58,0.18) 76%);padding:0 2px;}
-  .q-leftfoot{margin-top:28px;font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.18em;
+  .q-leftfoot{margin-top:auto;padding-top:28px;flex-shrink:0;font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.18em;
     text-transform:uppercase;color:var(--ink-mute);}
   .q-right{padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;justify-content:center;}
   .q-opt-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.22em;
@@ -181,6 +187,30 @@
   .fork-go{display:inline-flex;align-items:center;gap:12px;font-family:'Geist Mono',monospace;
     font-size:11px;letter-spacing:0.18em;text-transform:uppercase;transition:gap var(--d-base) var(--ease-out);}
   .fork-card:hover .fork-go{gap:18px;}
+
+  /* INTERLUDE */
+  .il-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:40px;background:var(--ink);}
+  .il-ring{width:120px;height:120px;border-radius:50%;border:1.5px solid var(--paper);
+    display:flex;align-items:center;justify-content:center;color:var(--paper);position:relative;margin-bottom:40px;
+    animation:il-shake 0.9s var(--ease-out) infinite;}
+  .il-ring.event{animation:none;}
+  .il-ring-pulse{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--paper);
+    animation:il-pulse 1.6s var(--ease-out) infinite;}
+  .il-ring-pulse:nth-child(2){animation-delay:0.5s;}
+  @keyframes il-pulse{0%{transform:scale(1);opacity:0.6;}100%{transform:scale(1.9);opacity:0;}}
+  @keyframes il-shake{0%,100%{transform:rotate(0);}20%{transform:rotate(-7deg);}40%{transform:rotate(7deg);}60%{transform:rotate(-5deg);}80%{transform:rotate(5deg);}}
+  .il-icon{position:relative;z-index:1;}
+  .il-label{font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:0.3em;
+    text-transform:uppercase;color:var(--rose-soft);margin-bottom:18px;}
+  .il-from{font-family:'Instrument Serif',serif;font-size:clamp(34px,6vw,64px);line-height:1.05;
+    color:var(--paper);max-width:18ch;}
+  .il-flag{display:inline-flex;width:46px;height:30px;border:1px solid rgba(244,239,230,0.3);
+    margin-left:12px;vertical-align:middle;overflow:hidden;border-radius:2px;}
+  .il-flag i{flex:1;}
+  .stage.is-active .il-wrap .il-label,.stage.is-active .il-wrap .il-from{
+    animation:rise 500ms var(--ease-out) both;}
+  .stage.is-active .il-wrap .il-from{animation-delay:120ms;}
 
   /* PARENT */
   .p-wrap{max-width:720px;margin:0 auto;padding:clamp(36px,7vh,72px) clamp(20px,5vw,48px);
@@ -351,28 +381,22 @@
       <div class="top-tag reveal"><span class="dot"></span><span>Київський професійний коледж · ПВФП</span></div>
       <div class="lockup reveal">
         <h1 class="lockup-h1">Кабінет <em>директора</em></h1>
-        <p class="lockup-sub">Сім ситуацій з робочого дня людини, без якої офіс зупиняється за два дні. Адміністратор. Секретар. Обліковець. <strong>Три професії в одному дипломі.</strong></p>
+        <p class="start-tagline">7 ситуацій одного робочого дня</p>
+        <p class="start-challenge">Чи витримаєш ти роботу,<br>де від тебе залежить <em>офіс?</em></p>
       </div>
       <div class="reveal">
         <div class="name-block">
-          <div class="name-label">Учасник випробування</div>
-          <input type="text" class="name-input" id="userName" placeholder="прізвище та ім'я" maxlength="40" autocomplete="off">
+          <input type="text" class="name-input" id="userName" placeholder="твоє ім'я" maxlength="40" autocomplete="off">
         </div>
         <div class="start-foot">
-          <button class="cta" onclick="startTest()"><span>Розпочати зміну</span>
+          <button class="cta" onclick="startTest()"><span>Почати зміну</span>
             <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
-          <div class="footnote">~ 3 хв · 7 ситуацій</div>
+          <div class="footnote">~ 3 хв</div>
         </div>
       </div>
     </div>
     <aside class="start-meta">
       <div class="meta-stamp reveal"><div class="seal"><div><div class="seal-top">★ КПК ★</div><div class="seal-mid">ПВФП</div><div class="seal-bot">Київ · MMXXVI</div></div></div></div>
-      <div class="reveal">
-        <div class="meta-row-item"><div class="meta-num rose">07</div><div class="meta-label">Ситуацій реального дня</div></div>
-        <div class="meta-row-item"><div class="meta-num">04</div><div class="meta-label">Професійні типажі</div></div>
-        <div class="meta-row-item"><div class="meta-num">03</div><div class="meta-label">Кваліфікації в одному дипломі</div></div>
-        <div class="meta-foot">Документообіг · електронна звітність ·<br>банк-клієнт · Excel · кадровий облік ·<br>первинна документація</div>
-      </div>
     </aside>
   </div>
 </section>
@@ -385,7 +409,7 @@
         <div class="q-progress-head reveal"><span>Питання <span id="qNum">01</span> / 07</span><span id="qPct">14%</span></div>
         <div class="q-progress reveal" id="qProgress"></div>
       </div>
-      <div class="reveal">
+      <div class="reveal q-body">
         <div class="q-time-marker" id="qTime">09:00</div>
         <div class="q-scenario-tag" id="qScenario">—</div>
         <div class="q-text" id="qText">—</div>
@@ -396,6 +420,21 @@
       <div class="q-opt-label reveal">Твоя дія</div>
       <div class="q-opts reveal" id="qOpts"></div>
     </div>
+  </div>
+</section>
+
+<!-- STAGE 2.5: INTERLUDE (incoming call / event) -->
+<section class="stage" id="stage-interlude">
+  <div class="il-wrap">
+    <div class="il-ring" id="ilRing">
+      <div class="il-ring-pulse"></div>
+      <div class="il-ring-pulse"></div>
+      <svg class="il-icon" id="ilIcon" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+    </div>
+    <div class="il-label" id="ilLabel">Вхідний виклик</div>
+    <div class="il-from" id="ilFrom">—</div>
   </div>
 </section>
 
@@ -550,7 +589,6 @@
         <div class="cert-trait" id="certTrait">—</div>
       </div>
       <div class="cert-foot">
-        <div class="cert-sign"><div class="signature">Є. Мельник</div><div class="role">Директор коледжу<br>підпис</div></div>
         <div class="cert-foot-mid"><div class="cert-seal-doc"><div><div class="top">★ КПК ★</div><div class="mid">ПВФП</div><div class="bot">Київ · 2026</div></div></div></div>
         <div class="cert-date"><div class="d" id="certDate">—</div><div class="l">Дата видачі</div></div>
       </div>
@@ -573,12 +611,13 @@
 // 1. Адреса, куди веде QR-код на сертифікаті (сайт коледжу або сам тест):
 const QR_TARGET = "https://pkvfp.kiev.ua/administrator-sekretar-kerivnyka-oblikovets%CA%B9-z-reyestratsiyi-bukhhalters%CA%B9kykh-danykh/";
 // 2. URL Google Apps Script (встав після деплою; залиш пустим — дані підуть у localStorage):
-const SCRIPT_URL = "";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx21odLF7uSbqGhUy0g7CNMQVj_yfu3-cblmRzXvzHTZzj-qi5T6eE_PIw-gmYmr1ni/exec";
 // 3. Прізвище директора на сертифікаті — заміни за потреби (також у HTML, .signature)
 // ========================================
 
 const questions = [
   { time:"09:15", scenario:"Терміновий дзвінок",
+    interlude:{label:"Вхідний виклик", from:"Ключовий партнер", type:"call"},
     text:"Директор на важливій зустрічі. Дзвонить ключовий партнер і кричить у слухавку: <em>«Терміново з'єднайте, у нас зрив контракту!»</em> Що робиш?",
     opts:[{t:"З'єдную одразу — справа справді термінова",s:{K:2,S:1}},{t:"Записую повідомлення, передам директору після зустрічі",s:{H:2,D:1}},{t:"Запитую що саме сталось, оцінюю терміновість — потім вирішую",s:{S:3,D:1}},{t:"Кажу що директор зайнятий, прошу передзвонити за годину",s:{D:2,H:1}}]},
   { time:"10:30", scenario:"Накладна без підпису",
@@ -594,9 +633,11 @@ const questions = [
     text:"Директор одночасно записаний на <em>дві зустрічі о 16:00</em>: податкова інспекторка та постачальник.",
     opts:[{t:"Дзвоню постачальнику, переношу — податкову не можна",s:{S:3,K:1}},{t:"Питаю директора — він вирішить сам",s:{D:1,H:1}},{t:"Переношу обидві: податкова на 16:00, постачальник на 17:00",s:{S:2,H:2}},{t:"Чесно перепрошую обом, пропоную перенести на завтра",s:{D:3,H:1}}]},
   { time:"15:30", scenario:"Несподіванка",
+    interlude:{label:"Вхідний виклик", from:"Заступник директора", type:"call"},
     text:"Дзвонить заступник: <em>директор у лікарні</em>. Через годину онлайн-нарада з міжнародним партнером.",
     opts:[{t:"Скасовую нараду — здоров'я важливіше за все",s:{D:2}},{t:"Дзвоню партнеру, пояснюю ситуацію загально, переношу на завтра",s:{S:2,D:2}},{t:"Беру нараду на себе — представляю компанію, фіксую все письмово",s:{K:3,S:1}},{t:"Шукаю заступника, який проведе нараду замість директора",s:{S:3,K:1}}]},
   { time:"17:00", scenario:"Кінець зміни",
+    interlude:{label:"Стук у двері", from:"Перевірка з пожежної", type:"event"},
     text:"Ти збиралась(-вся) йти, але прийшла <em>перевірка з пожежної</em>. Директор уже поїхав. Інспектор просить документи.",
     opts:[{t:"Кажу що нічого не знаю, нехай чекають директора завтра",s:{}},{t:"Викликаю директора назад — це його зона відповідальності",s:{H:1,D:1}},{t:"Надаю документи що знаю, інші — лише з директором, фіксую візит",s:{H:2,K:3,S:1}},{t:"Пропоную інспектору каву, ввічливо тягну час до повернення директора",s:{D:3,S:1}}]}
 ];
@@ -643,7 +684,29 @@ function startTest(){
   if(!n || n.length<2){ $('userName').focus(); $('userName').style.borderBottomColor='var(--rose)';
     setTimeout(()=>{$('userName').style.borderBottomColor='';},1200); return; }
   userName = n; currentQ = 0; scores = {S:0,H:0,D:0,K:0};
-  buildProgress(); switchStage('stage-question'); loadQuestion();
+  buildProgress(); showQuestion();
+}
+
+// Показує інтерлюд (якщо є) перед питанням, або одразу питання
+function showQuestion(){
+  const q = questions[currentQ];
+  if(q.interlude){
+    const il = q.interlude;
+    $('ilLabel').textContent = il.label;
+    // німецький прапор для міжнародної наради (питання 6)
+    if(currentQ===5){
+      $('ilFrom').innerHTML = 'Берлін · Німеччина<span class="il-flag"><i style="background:#000"></i><i style="background:#dd0000"></i><i style="background:#ffce00"></i></span>';
+    } else {
+      $('ilFrom').textContent = il.from;
+    }
+    const ring = $('ilRing');
+    if(il.type==='event'){ ring.classList.add('event'); } else { ring.classList.remove('event'); }
+    switchStage('stage-interlude');
+    // авто-перехід у питання
+    setTimeout(()=>{ switchStage('stage-question'); loadQuestion(); }, 1500);
+  } else {
+    switchStage('stage-question'); loadQuestion();
+  }
 }
 
 function buildProgress(){
@@ -676,7 +739,10 @@ function loadQuestion(){
 function selectAnswer(d){
   Object.keys(d).forEach(k=>{ scores[k]=(scores[k]||0)+(d[k]||0); });
   currentQ++;
-  if(currentQ>=questions.length) setTimeout(showResult,220); else setTimeout(loadQuestion,180);
+  if(currentQ>=questions.length){ setTimeout(showResult,220); return; }
+  // ритм пришвидшується ближче до фіналу: день "горить"
+  const pause = currentQ>=5 ? 80 : (currentQ>=3 ? 130 : 180);
+  setTimeout(showQuestion, pause);
 }
 
 function showResult(){
