@@ -315,10 +315,17 @@
   }
 
   @media (max-width:900px){
-    .start-grid,.q-grid,.r-grid,.fork-grid{grid-template-columns:1fr;}
+    /* грід у одну колонку + висота за контентом, потік зверху */
+    .start-grid,.q-grid,.r-grid,.fork-grid{grid-template-columns:1fr;min-height:0;}
+    .stage{min-height:0;}
+    .stage.is-active{min-height:100dvh;}
+    .start-main,.q-left,.r-left,.start-meta,.r-right,.q-right,.fork-card{
+      min-height:0;justify-content:flex-start;}
+    .start-main{padding-bottom:40px;}
     .start-main,.q-left,.r-left{border-right:none;border-bottom:1px solid var(--line);}
     .fork-card:first-child{border-right:none;border-bottom:1px solid var(--line);}
     .start-meta,.r-right{padding-block:36px;}
+    .lockup{margin-top:36px;}
     .r-char{font-size:240px;}
     .cert-foot{grid-template-columns:1fr;gap:20px;justify-items:center;text-align:center;}
     .cert-sign,.cert-date{text-align:center;}
@@ -336,7 +343,34 @@
 </style>
 </head>
 <body>
-ікації в одному дипломі</div></div>
+
+<!-- STAGE 1: START -->
+<section class="stage is-active" id="stage-start">
+  <div class="start-grid">
+    <div class="start-main">
+      <div class="top-tag reveal"><span class="dot"></span><span>Київський професійний коледж · ПВФП</span></div>
+      <div class="lockup reveal">
+        <h1 class="lockup-h1">Кабінет <em>директора</em></h1>
+        <p class="lockup-sub">Сім ситуацій з робочого дня людини, без якої офіс зупиняється за два дні. Адміністратор. Секретар. Обліковець. <strong>Три професії в одному дипломі.</strong></p>
+      </div>
+      <div class="reveal">
+        <div class="name-block">
+          <div class="name-label">Учасник випробування</div>
+          <input type="text" class="name-input" id="userName" placeholder="прізвище та ім'я" maxlength="40" autocomplete="off">
+        </div>
+        <div class="start-foot">
+          <button class="cta" onclick="startTest()"><span>Розпочати зміну</span>
+            <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
+          <div class="footnote">~ 3 хв · 7 ситуацій</div>
+        </div>
+      </div>
+    </div>
+    <aside class="start-meta">
+      <div class="meta-stamp reveal"><div class="seal"><div><div class="seal-top">★ КПК ★</div><div class="seal-mid">ПВФП</div><div class="seal-bot">Київ · MMXXVI</div></div></div></div>
+      <div class="reveal">
+        <div class="meta-row-item"><div class="meta-num rose">07</div><div class="meta-label">Ситуацій реального дня</div></div>
+        <div class="meta-row-item"><div class="meta-num">04</div><div class="meta-label">Професійні типажі</div></div>
+        <div class="meta-row-item"><div class="meta-num">03</div><div class="meta-label">Кваліфікації в одному дипломі</div></div>
         <div class="meta-foot">Документообіг · електронна звітність ·<br>банк-клієнт · Excel · кадровий облік ·<br>первинна документація</div>
       </div>
     </aside>
