@@ -158,6 +158,16 @@
     gap:16px;font-size:15px;}
   .r-roles li .idx{font-family:'Geist Mono',monospace;font-size:11px;color:var(--rose);min-width:24px;}
   .r-actions{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap;}
+  .r-contact{margin-top:30px;padding-top:28px;border-top:1px solid var(--line);}
+  .r-contact-label{display:block;font-size:13px;line-height:1.5;color:var(--ink-soft);margin-bottom:12px;}
+  .r-contact-label span{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--ink-mute);}
+  .r-contact-input{width:100%;max-width:420px;background:transparent;border:none;
+    border-bottom:1.5px solid var(--line);padding:8px 0 12px;font-family:'Geist',sans-serif;
+    font-size:17px;color:var(--ink);outline:none;transition:border-color var(--d-base) var(--ease-out);}
+  .r-contact-input::placeholder{color:var(--ink-mute);}
+  .r-contact-input:focus{border-color:var(--rose);}
+  .r-contact-note{font-size:11px;line-height:1.5;color:var(--ink-mute);margin-top:10px;max-width:420px;}
   .r-right{padding:clamp(36px,7vw,80px) clamp(28px,5vw,56px);background:var(--paper-deep);
     display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
   .r-char{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(200px,36vw,440px);
@@ -450,6 +460,11 @@
       </div>
       <div class="reveal">
         <div class="r-roles"><div class="r-roles-label">Підходящі ролі</div><ul id="vRoles"></ul></div>
+        <div class="r-contact">
+          <label class="r-contact-label" for="sContact">Залиш контакт — надішлемо запрошення на день відкритих дверей <span>(необов'язково)</span></label>
+          <input type="text" class="r-contact-input" id="sContact" placeholder="телефон або @instagram" autocomplete="off">
+          <p class="r-contact-note">Залишаючи контакт, ти погоджуєшся, що коледж звʼяжеться з тобою щодо вступу. Якщо тобі менше 14 років — спитай дозволу батьків.</p>
+        </div>
         <div class="r-actions">
           <button class="cta" onclick="goFork()"><span>Далі</span>
             <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
@@ -612,7 +627,6 @@
 const QR_TARGET = "https://pkvfp.kiev.ua/administrator-sekretar-kerivnyka-oblikovets%CA%B9-z-reyestratsiyi-bukhhalters%CA%B9kykh-danykh/";
 // 2. URL Google Apps Script (встав після деплою; залиш пустим — дані підуть у localStorage):
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx21odLF7uSbqGhUy0g7CNMQVj_yfu3-cblmRzXvzHTZzj-qi5T6eE_PIw-gmYmr1ni/exec";
-// 3. Прізвище директора на сертифікаті — заміни за потреби (також у HTML, .signature)
 // ========================================
 
 const questions = [
@@ -648,7 +662,7 @@ const psychotypes = {
     descShort:"Бачить ситуацію цілісно. Розставляє пріоритети. Аналізує перед дією.",
     traits:{mindset:"Системне планування",strength:"Розставлення пріоритетів",env:"Кабінет керівника великої компанії"},
     roles:["Адміністратор офісу великої компанії","Помічник керівника (executive assistant)","Координатор проєктів","Офіс-менеджер з функцією управління"]},
-  H:{title:"Хранитель",char:"H",subtitle:"Точність — твій інструмент",
+  H:{title:"Дбайливий",char:"H",subtitle:"Точність — твій інструмент",
     desc:"Ти бачиш помилку в одному рядку з тисячі. Документи, цифри, реєстри — це твоє. Без таких людей будь-яка компанія розвалюється за тиждень: податкова, бухгалтерія, кадри тримаються саме на тобі.",
     descShort:"Бачить помилку з першого погляду. Документи та цифри — рідна стихія.",
     traits:{mindset:"Аналітичне, методичне",strength:"Робота з документами",env:"Архів, реєстр, бухгалтерія"},
@@ -774,8 +788,8 @@ function prepareCert(p){
 }
 
 // FORK
-function goFork(){ switchStage('stage-fork'); }
-function forkSelf(){ saveData('school'); openCert(); }
+function goFork(){ saveData('school'); switchStage('stage-fork'); }
+function forkSelf(){ openCert(); }
 function forkParent(){
   $('pChildName').textContent=userName;
   $('pChildType').textContent=psychotypes[resultType].title;
@@ -845,7 +859,8 @@ function saveData(type){
       contact:($('pPhone').value.trim()+' '+$('pEmail').value.trim()).trim(),
       priority:parentAnswers.priority,know:parentAnswers.know,dual:parentAnswers.dual,certId:certIdValue};
   }else{
-    payload={type:'school',ts,name:userName,phone:'',psychotype:psychotypes[resultType].title,certId:certIdValue};
+    const sc = $('sContact') ? $('sContact').value.trim() : '';
+    payload={type:'school',ts,name:userName,phone:sc,psychotype:psychotypes[resultType].title,certId:certIdValue};
   }
   // queue locally always
   const queue=JSON.parse(localStorage.getItem('kpk_queue')||'[]');
@@ -873,6 +888,7 @@ window.addEventListener('load',()=>{ if(SCRIPT_URL) flushQueue(); });
 
 function restart(){
   $('userName').value=''; $('pPhone').value=''; $('pEmail').value=''; $('pConsent').checked=false;
+  if($('sContact')) $('sContact').value='';
   parentAnswers={priority:"",know:"",dual:""};
   document.querySelectorAll('.p-opt.selected').forEach(b=>b.classList.remove('selected'));
   closeCert(); switchStage('stage-start');
