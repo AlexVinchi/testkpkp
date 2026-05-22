@@ -424,7 +424,7 @@
         <div class="name-block">
           <input type="text" class="name-input" id="userName" placeholder="твоє Прізвище та Ім'я" maxlength="40" autocomplete="off">
         </div>
-        <div class="name-block" style="margin-top:18px;">
+        <div style="margin-top:18px;">
           <div class="name-label">Номер телефону</div>
           <div class="r-contact-row" style="max-width:100%;">
             <input type="tel" class="name-input" id="sContact" placeholder="+380 XX XXX XX XX" autocomplete="off" inputmode="tel" maxlength="17" style="font-size:clamp(17px,2vw,24px);">
@@ -822,6 +822,7 @@ function showResult(){
   p.roles.forEach((r,i)=>{ const li=document.createElement('li');
     li.innerHTML=`<span class="idx">${String(i+1).padStart(2,'0')}</span><span>${r}</span>`; rolesEl.appendChild(li); });
   prepareCert(p);
+  saveData('school');
   switchStage('stage-result');
   setTimeout(initPhoneMasks, 100);
 }
@@ -841,7 +842,6 @@ function prepareCert(p){
 
 // FORK
 function goFork(){
-  saveData('school');
   switchStage('stage-fork');
 }
 function forkSelf(){ openCert(); }
