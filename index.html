@@ -424,6 +424,14 @@
         <div class="name-block">
           <input type="text" class="name-input" id="userName" placeholder="твоє Прізвище та Ім'я" maxlength="40" autocomplete="off">
         </div>
+        <div class="name-block" style="margin-top:18px;">
+          <div class="name-label">Номер телефону</div>
+          <div class="r-contact-row" style="max-width:100%;">
+            <input type="tel" class="name-input" id="sContact" placeholder="+380 XX XXX XX XX" autocomplete="off" inputmode="tel" maxlength="17" style="font-size:clamp(17px,2vw,24px);">
+            <button class="skip-btn" type="button" id="sSkip" onclick="skipPhone('s')" style="padding-bottom:14px;">Пропустити</button>
+          </div>
+          <p class="r-contact-note" id="sContactErr" style="display:none;color:var(--rose);font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.1em;margin-top:6px;">Введи номер або натисни «Пропустити»</p>
+        </div>
         <div class="start-foot">
           <button class="cta" onclick="startTest()"><span>Почати зміну</span>
             <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
@@ -486,15 +494,6 @@
       </div>
       <div class="reveal">
         <div class="r-roles"><div class="r-roles-label">Підходящі ролі</div><ul id="vRoles"></ul></div>
-        <div class="r-contact">
-          <label class="r-contact-label" for="sContact">Залиш телефон — надішлемо запрошення на день відкритих дверей</label>
-          <div class="r-contact-row">
-            <input type="tel" class="r-contact-input" id="sContact" placeholder="+380 XX XXX XX XX" autocomplete="off" inputmode="tel" maxlength="17">
-            <button class="skip-btn" type="button" id="sSkip" onclick="skipPhone('s')">Пропустити</button>
-          </div>
-          <p class="r-contact-note" id="sContactErr" style="display:none;color:var(--rose);">Введи номер або натисни «Пропустити»</p>
-          <p class="r-contact-note">Залишаючи номер, ти погоджуєшся, що коледж зв'яжеться з тобою щодо вступу. Якщо тобі менше 14 років — спитай дозволу батьків.</p>
-        </div>
         <div class="r-actions">
           <button class="cta" onclick="goFork()"><span>Далі</span>
             <svg class="arrow" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7H19M19 7L13 1M19 7L13 13"/></svg></button>
@@ -668,7 +667,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx21odLF7uSbqGhUy0g7
 const questions = [
   { time:"09:15", scenario:"Терміновий дзвінок",
     interlude:{label:"Вхідний виклик", from:"Ключовий партнер", type:"call"},
-    text:"Директор на важливій зустрічі. Дзвонить ключовий партнер і кричить у слухавку: <em>«Терміново з'єднайте, у нас зрив контракту!»</em> Що робиш?",
+    text:"Директор на важливій зустрічі. Дзвонить ключовий партнер і кричить у слухавку: <em>«Терміново з'єднайте, у нас зрив контракту!»</em> Що зробиш?",
     opts:[{t:"З'єдную одразу — справа справді термінова",s:{K:2,S:1}},{t:"Записую повідомлення, передам директору після зустрічі",s:{H:2,D:1}},{t:"Запитую що саме сталось, оцінюю терміновість — потім вирішую",s:{S:3,D:1}},{t:"Кажу що директор зайнятий, прошу передзвонити за годину",s:{D:2,H:1}}]},
   { time:"10:30", scenario:"Накладна без підпису",
     text:"На столі — накладна на <em>47 200 ₴</em>. Не вистачає підпису комірника. Партнер вже їде забирати товар.",
@@ -678,7 +677,7 @@ const questions = [
     opts:[{t:"Спокійно вислуховую, пропоную каву та конкретний час очікування",s:{D:3,S:1}},{t:"Викликаю охорону — це непрофесійна поведінка",s:{K:2}},{t:"Намагаюсь вирішити його питання сама(-м), не турбуючи директора",s:{S:2,D:2}},{t:"Чітко повідомляю: запис обов'язковий, пропоную записати на завтра",s:{H:2,D:1}}]},
   { time:"13:20", scenario:"Розбіжність у звіті",
     text:"У квартальному звіті не сходиться <em>340 ₴</em>. Подати треба завтра о 09:00.",
-    opts:[{t:"Округлюю — 340 ₴ на тлі звіту це похибка",s:{K:1}},{t:"Перевіряю первинні документи по кожному рядку до знаходження",s:{H:3,S:1}},{t:"Дзвоню бухгалтеру, прошу подивитись разом",s:{D:2,S:1}},{t:"Записую розбіжність у пояснювальну, подаю звіт",s:{H:1,K:1}}]},
+    opts:[{t:"Округлюю — 340 ₴ в масштабах звіту це похибка",s:{K:1}},{t:"Перевіряю первинні документи по кожному рядку до знаходження",s:{H:3,S:1}},{t:"Дзвоню бухгалтеру, прошу подивитись разом",s:{D:2,S:1}},{t:"Записую розбіжність у пояснювальну, подаю звіт",s:{H:1,K:1}}]},
   { time:"14:50", scenario:"Колізія у розкладі",
     text:"Директор одночасно записаний на <em>дві зустрічі о 16:00</em>: податкова інспекторка та постачальник.",
     opts:[{t:"Дзвоню постачальнику, переношу — податкову не можна",s:{S:3,K:1}},{t:"Питаю директора — він вирішить сам",s:{D:1,H:1}},{t:"Переношу обидві: податкова на 16:00, постачальник на 17:00",s:{S:2,H:2}},{t:"Чесно перепрошую обом, пропоную перенести на завтра",s:{D:3,H:1}}]},
@@ -688,7 +687,7 @@ const questions = [
     opts:[{t:"Скасовую нараду — здоров'я важливіше за все",s:{D:2}},{t:"Дзвоню партнеру, пояснюю ситуацію загально, переношу на завтра",s:{S:2,D:2}},{t:"Беру нараду на себе — представляю компанію, фіксую все письмово",s:{K:3,S:1}},{t:"Шукаю заступника, який проведе нараду замість директора",s:{S:3,K:1}}]},
   { time:"17:00", scenario:"Кінець зміни",
     interlude:{label:"Стук у двері", from:"Перевірка з пожежної", type:"event"},
-    text:"Ти збиралась(-вся) йти, але прийшла <em>перевірка з пожежної</em>. Директор уже поїхав. Інспектор просить документи.",
+    text:"Ти збираєшся вже йти з роботи, але прийшла <em>перевірка з пожежної</em>. Директор уже поїхав. Інспектор просить документи.",
     opts:[{t:"Кажу що нічого не знаю, нехай чекають директора завтра",s:{}},{t:"Викликаю директора назад — це його зона відповідальності",s:{H:1,D:1}},{t:"Надаю документи що знаю, інші — лише з директором, фіксую візит",s:{H:2,K:3,S:1}},{t:"Пропоную інспектору каву, ввічливо тягну час до повернення директора",s:{D:3,S:1}}]}
 ];
 
@@ -703,16 +702,16 @@ const psychotypes = {
     descShort:"Бачить помилку з першого погляду. Документи та цифри — рідна стихія.",
     traits:{mindset:"Аналітичне, методичне",strength:"Робота з документами",env:"Архів, реєстр, бухгалтерія"},
     roles:["Обліковець з реєстрації бухгалтерських даних","Секретар-діловод","Фахівець з первинної документації","Архіваріус, кадровик-помічник"]},
-  D:{title:"Дипломат",char:"D",subtitle:"Ти вмієш з людьми",
+  D:{title:"Дипломат",char:"D",subtitle:"Ключовий медіатор компанії",
     desc:"Гасиш конфлікти до того, як вони розгорілись. Знаходиш слова для злого клієнта, нервового партнера, втомленого директора. Ти — обличчя компанії, перше враження. Без емпатії жоден офіс не функціонує.",
     descShort:"Гасить конфлікти словами. Перше обличчя компанії.",
     traits:{mindset:"Емпатичне, орієнтоване на людей",strength:"Комунікація та де-ескалація",env:"Приймальня, рецепція, представництво"},
     roles:["Секретар керівника великої організації","Адміністратор приймальні","Координатор клієнтського сервісу","Асистент у представницьких структурах"]},
   K:{title:"Кризовий",char:"K",subtitle:"Працює там, де гаряче",
-    desc:"Ти не губишся під тиском. Швидке рішення, чіткий протокол, відповідальність за результат. Це профіль адміністратора у військовій, правоохоронній або екстреній структурі — там, де ціна помилки висока.",
+    desc:"Ти не губишся під тиском. Швидке рішення, чіткий протокол, відповідальність за результат. Це профіль адміністратора у силовій, правоохоронній або екстреній структурі — там, де ціна помилки висока.",
     descShort:"Не губиться під тиском. Швидко вирішує. Тримає протокол.",
     traits:{mindset:"Тактичне, рішуче",strength:"Дії під тиском",env:"Штаб, операційний центр, силова структура"},
-    roles:["Адміністратор у штабі військової частини","Діловод у силових структурах (ВСУ, ДСНС)","Помічник керівника в антикризовому управлінні","Координатор операційних центрів"]}
+    roles:["Діловод у силових структурах (ЗСУ, ДСНС)","Помічник керівника в антикризовому управлінні","Координатор операційних центрів"]}
 };
 
 // ========= STATE & LOGIC =========
@@ -733,6 +732,22 @@ function startTest(){
   const n = $('userName').value.trim();
   if(!n || n.length<2){ $('userName').focus(); $('userName').style.borderBottomColor='var(--rose)';
     setTimeout(()=>{$('userName').style.borderBottomColor='';},1200); return; }
+  // перевіряємо телефон якщо не пропустили
+  const sc = $('sContact'); const err = $('sContactErr');
+  if(!sPhoneSkipped){
+    if(!sc || !sc.value.trim()){
+      if(err) err.style.display='block';
+      if(sc){ sc.style.borderBottomColor='var(--rose)'; sc.focus(); }
+      return;
+    }
+    if(!isPhoneValid(sc.value)){
+      if(err) err.style.display='block';
+      if(sc){ sc.style.borderBottomColor='var(--rose)'; sc.focus(); }
+      return;
+    }
+  }
+  if(err) err.style.display='none';
+  if(sc) sc.style.borderBottomColor='';
   userName = n; currentQ = 0; scores = {S:0,H:0,D:0,K:0};
   buildProgress(); showQuestion();
 }
@@ -826,23 +841,6 @@ function prepareCert(p){
 
 // FORK
 function goFork(){
-  const sc = $('sContact');
-  const err = $('sContactErr');
-  // якщо не пропустили — телефон обов'язковий
-  if(!sPhoneSkipped){
-    if(!sc || !sc.value.trim()){
-      if(err) err.style.display='block';
-      if(sc){ sc.style.borderBottomColor='var(--rose)'; sc.focus(); }
-      return;
-    }
-    if(!isPhoneValid(sc.value)){
-      if(err) err.style.display='block';
-      if(sc){ sc.style.borderBottomColor='var(--rose)'; sc.focus(); }
-      return;
-    }
-  }
-  if(err) err.style.display='none';
-  if(sc) sc.style.borderBottomColor='';
   saveData('school');
   switchStage('stage-fork');
 }
