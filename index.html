@@ -801,7 +801,7 @@ function selP(btn,key,val){
   btn.classList.add('selected');
 }
 function submitParent(){
-  const phone=$('pPhone').value.trim(), email=$('pEmail').value.trim(), consent=$('pConsent').checked;
+  const phone=$('pPhone').value.trim(), email='', consent=$('pConsent').checked;
   if((phone||email) && !consent){
     $('pConsent').parentElement.style.outline='2px solid var(--rose)';
     setTimeout(()=>{$('pConsent').parentElement.style.outline='';},1500); return;
@@ -854,7 +854,7 @@ function saveData(type){
   let payload;
   if(type==='parent'){
     payload={type:'parent',ts,childName:userName,childType:psychotypes[resultType].title,
-      contact:($('pPhone').value.trim()+' '+$('pEmail').value.trim()).trim(),
+      contact:$('pPhone').value.trim(),
       priority:parentAnswers.priority,know:parentAnswers.know,dual:parentAnswers.dual,certId:certIdValue};
   }else{
     const sc = $('sContact') ? $('sContact').value.trim() : '';
@@ -885,7 +885,7 @@ window.addEventListener('online',flushQueue);
 window.addEventListener('load',()=>{ if(SCRIPT_URL) flushQueue(); });
 
 function restart(){
-  $('userName').value=''; $('pPhone').value=''; $('pEmail').value=''; $('pConsent').checked=false;
+  $('userName').value=''; $('pPhone').value=''; $('pConsent').checked=false;
   if($('sContact')) $('sContact').value='';
   parentAnswers={priority:"",know:"",dual:""};
   document.querySelectorAll('.p-opt.selected').forEach(b=>b.classList.remove('selected'));
