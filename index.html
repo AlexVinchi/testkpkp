@@ -120,16 +120,18 @@
     text-transform:uppercase;color:var(--ink-mute);margin-bottom:12px;}
   .q-opts{border-top:1px solid var(--line);}
   .q-opt{width:100%;text-align:left;background:transparent;border:none;border-bottom:1px solid var(--line);position:relative;
-    padding:22px 12px 22px 0;display:flex;gap:22px;align-items:flex-start;cursor:pointer;position:relative;
+    padding:18px 16px 18px 20px;display:flex;gap:20px;align-items:flex-start;cursor:pointer;position:relative;
     transition:transform var(--d-fast) var(--ease-out),padding-left var(--d-base) var(--ease-out);
     font-family:'Geist',sans-serif;color:var(--ink);}
   .q-opt::before{content:'';position:absolute;left:-100%;top:0;bottom:0;width:100%;
     background:var(--paper-deep);transition:left var(--d-base) var(--ease-out);z-index:-1;}
-  .q-opt:hover{padding-left:16px;}
+  .q-opt:hover{padding-left:32px;}
   .q-opt:hover::before{left:0;}
   .q-opt:active{transform:scale(0.985);}
-  .q-opt-letter{font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;color:var(--rose);
+  
     line-height:1;min-width:30px;transition:transform var(--d-base) var(--ease-out);}
+  .q-opt-letter{font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;color:var(--rose);
+    line-height:1;min-width:28px;transition:transform var(--d-base) var(--ease-out);}
   .q-opt:hover .q-opt-letter{transform:translateX(-4px);}
   .q-opt-text{font-size:16px;line-height:1.5;flex:1;padding-right:12px;}
   .q-opt-arrow{width:18px;height:18px;flex-shrink:0;margin-top:4px;opacity:0;transform:translateX(-8px);
@@ -460,9 +462,10 @@
       <div class="reveal">
         <div class="r-roles"><div class="r-roles-label">Підходящі ролі</div><ul id="vRoles"></ul></div>
         <div class="r-contact">
-          <label class="r-contact-label" for="sContact">Залиш контакт — надішлемо запрошення на день відкритих дверей</label>
-          <input type="text" class="r-contact-input" id="sContact" placeholder="телефон" autocomplete="off">
-          <p class="r-contact-note">Залишаючи контакт, ти погоджуєшся, що коледж звʼяжеться з тобою щодо вступу. Якщо тобі менше 14 років — спитай дозволу батьків.</p>
+          <label class="r-contact-label" for="sContact">Залиш телефон — надішлемо запрошення на день відкритих дверей <span>(необов'язково)</span></label>
+          <input type="tel" class="r-contact-input" id="sContact" placeholder="+380 XX XXX XX XX" autocomplete="off" inputmode="tel" maxlength="17">
+          <p class="r-contact-note" id="sContactErr" style="display:none;color:var(--rose);">Перевір номер — має бути 10 цифр після +380</p>
+          <p class="r-contact-note">Залишаючи номер, ти погоджуєшся, що коледж зв'яжеться з тобою щодо вступу. Якщо тобі менше 14 років — спитай дозволу батьків.</p>
         </div>
         <div class="r-actions">
           <button class="cta" onclick="goFork()"><span>Далі</span>
@@ -546,7 +549,7 @@
       <div class="p-contact">
         <div class="p-q-label">Контакт для запрошення:</div>
         <div class="p-contact-fields">
-          <div class="p-field"><label>Телефон</label><input type="tel" id="pPhone" placeholder="+380" autocomplete="off"></div>
+          <div class="p-field"><label>Телефон батьків</label><input type="tel" id="pPhone" placeholder="+380 XX XXX XX XX" autocomplete="off" inputmode="tel" maxlength="17"><span class="p-field-err" id="pPhoneErr" style="display:none;font-family:'Geist Mono',monospace;font-size:10px;color:var(--rose);">Перевір номер</span></div>
         </div>
         <label class="p-consent">
           <input type="checkbox" id="pConsent">
@@ -770,6 +773,7 @@ function showResult(){
     li.innerHTML=`<span class="idx">${String(i+1).padStart(2,'0')}</span><span>${r}</span>`; rolesEl.appendChild(li); });
   prepareCert(p);
   switchStage('stage-result');
+  setTimeout(initPhoneMasks, 100);
 }
 
 function prepareCert(p){
@@ -786,12 +790,27 @@ function prepareCert(p){
 }
 
 // FORK
-function goFork(){ saveData('school'); switchStage('stage-fork'); }
+function goFork(){
+  // валідація телефону школяра (якщо заповнив)
+  const sc = $('sContact');
+  const err = $('sContactErr');
+  if(sc && sc.value.trim() && !isPhoneValid(sc.value)){
+    if(err) err.style.display='block';
+    sc.style.borderBottomColor='var(--rose)';
+    sc.focus();
+    return;
+  }
+  if(err) err.style.display='none';
+  if(sc) sc.style.borderBottomColor='';
+  saveData('school');
+  switchStage('stage-fork');
+}
 function forkSelf(){ openCert(); }
 function forkParent(){
   $('pChildName').textContent=userName;
   $('pChildType').textContent=psychotypes[resultType].title;
   switchStage('stage-parent');
+  setTimeout(initPhoneMasks, 100);
 }
 
 // PARENT
@@ -801,8 +820,19 @@ function selP(btn,key,val){
   btn.classList.add('selected');
 }
 function submitParent(){
-  const phone=$('pPhone').value.trim(), email='', consent=$('pConsent').checked;
-  if((phone||email) && !consent){
+  const phone=$('pPhone').value.trim(), consent=$('pConsent').checked;
+  const phoneErr = $('pPhoneErr');
+  // валідація телефону (якщо заповнений)
+  if(phone && !isPhoneValid(phone)){
+    if(phoneErr) phoneErr.style.display='block';
+    $('pPhone').style.borderBottomColor='var(--rose)';
+    $('pPhone').focus();
+    return;
+  }
+  if(phoneErr) phoneErr.style.display='none';
+  $('pPhone').style.borderBottomColor='';
+  // згода потрібна якщо залишає телефон
+  if(phone && !consent){
     $('pConsent').parentElement.style.outline='2px solid var(--rose)';
     setTimeout(()=>{$('pConsent').parentElement.style.outline='';},1500); return;
   }
@@ -854,11 +884,12 @@ function saveData(type){
   let payload;
   if(type==='parent'){
     payload={type:'parent',ts,childName:userName,childType:psychotypes[resultType].title,
-      contact:$('pPhone').value.trim(),
+      contact:phoneToDb($('pPhone').value.trim()),
       priority:parentAnswers.priority,know:parentAnswers.know,dual:parentAnswers.dual,certId:certIdValue};
   }else{
     const sc = $('sContact') ? $('sContact').value.trim() : '';
-    payload={type:'school',ts,name:userName,phone:sc,psychotype:psychotypes[resultType].title,certId:certIdValue};
+    const scClean = sc ? phoneToDb(sc) : '';
+    payload={type:'school',ts,name:userName,phone:scClean,psychotype:psychotypes[resultType].title,certId:certIdValue};
   }
   // queue locally always
   const queue=JSON.parse(localStorage.getItem('kpk_queue')||'[]');
@@ -892,6 +923,84 @@ function restart(){
   closeCert(); switchStage('stage-start');
 }
 $('userName').addEventListener('keydown',e=>{ if(e.key==='Enter') startTest(); });
+
+// ========= МАСКА ТЕЛЕФОНУ =========
+// Форматує: +380 50 111 22 33 (візуально)
+// Зберігає: 380501112233 (в базу)
+
+function formatPhone(raw){
+  // залишаємо тільки цифри
+  let d = raw.replace(/\D/g,'');
+  // нормалізація до 12 цифр (380 + 9)
+  if(d.startsWith('380')){
+    // 380XXXXXXXXX — вже правильно
+  } else if(d.startsWith('0') && d.length <= 10){
+    // 0XXXXXXXXX → 38 + 0XXXXXXXXX
+    d = '38' + d;
+  } else if(d.startsWith('80') && d.length <= 11){
+    // 80XXXXXXXXX → 3 + 80XXXXXXXXX
+    d = '3' + d;
+  } else if(d.length > 0 && !d.startsWith('38')){
+    d = '380' + d;
+  }
+  // обрізаємо до 12 цифр максимум
+  d = d.slice(0,12);
+  // форматуємо: +380 XX XXX XX XX
+  let out = '';
+  if(d.length>=1) out = '+' + d.slice(0,3);
+  if(d.length>3)  out += ' ' + d.slice(3,5);
+  if(d.length>5)  out += ' ' + d.slice(5,8);
+  if(d.length>8)  out += ' ' + d.slice(8,10);
+  if(d.length>10) out += ' ' + d.slice(10,12);
+  return {display: out, digits: d};
+}
+
+function phoneToDb(display){
+  // для збереження: тільки цифри, без +
+  return display.replace(/\D/g,'');
+}
+
+function isPhoneValid(display){
+  const d = display.replace(/\D/g,'');
+  return d.length === 12 && d.startsWith('380');
+}
+
+function applyPhoneMask(input){
+  input.addEventListener('focus', function(){
+    if(!this.value) this.value = '+380 ';
+  });
+  input.addEventListener('input', function(){
+    const pos = this.selectionStart;
+    const old = this.value;
+    const {display} = formatPhone(old);
+    this.value = display;
+    // намагаємося зберегти позицію курсору
+    try { this.setSelectionRange(display.length, display.length); } catch(e){}
+  });
+  input.addEventListener('blur', function(){
+    // якщо залишили порожнє або тільки +380 — очищаємо
+    const d = this.value.replace(/\D/g,'');
+    if(d.length <= 3) { this.value = ''; return; }
+    const {display} = formatPhone(this.value);
+    this.value = display;
+  });
+  input.addEventListener('keydown', function(e){
+    // дозволяємо backspace нормально
+    if(e.key === 'Backspace' && this.value === '+380 '){
+      this.value = '';
+      e.preventDefault();
+    }
+  });
+}
+
+// Підключаємо маску до обох полів при їх появі
+function initPhoneMasks(){
+  const sc = $('sContact');
+  const pp = $('pPhone');
+  if(sc && !sc.dataset.masked){ sc.dataset.masked='1'; applyPhoneMask(sc); }
+  if(pp && !pp.dataset.masked){ pp.dataset.masked='1'; applyPhoneMask(pp); }
+}
+initPhoneMasks();
 </script>
 </body>
 </html>
